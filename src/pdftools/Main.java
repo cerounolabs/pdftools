@@ -53,8 +53,6 @@ public class Main {
             index       = 0;
             txt1        = solicitudConsulta(txt1);
             txt1        = solicitudConsulta(txt1);
-            
-            System.out.println(txt1);
 
         } catch (IOException ex) {
             System.err.print(ex);
