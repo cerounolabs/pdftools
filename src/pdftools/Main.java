@@ -26,12 +26,16 @@ public class Main {
     private static String WEBCON_DOC;
     private static String WEBINF_ARC;
     private static String WEBINF_FAJ;
+    
     private static String fileName;
+    private static String txt1;
+    
+    private static int index;
     
     public static void main(String[] args) throws IOException, SQLException {
         tr  = new TransactionSQL();
         
-        WEBCON_COD  = "20190113145300";
+        WEBCON_COD  = "20190113145301";
         //WEBCON_COD  = args[0];
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
         WEBINF_ARC  = tr.WEBINFGetArchivo(WEBCON_COD);
@@ -41,13 +45,17 @@ public class Main {
         pdf.setFilePath(fileName);
         
         try {
-            String text     = pdf.toText();
-            System.out.println(text);
+            txt1        = pdf.toText();
             
-            posText     = posicionPalabra(text, "Faja");
-            WEBINF_FAJ  = text.substring(posText + 6, posText + 7);
+            posText     = posicionPalabra(txt1, "Faja");
+            WEBINF_FAJ  = txt1.substring(posText + 6, posText + 7);
             tr.WEBINFSetFaja(WEBCON_COD, WEBINF_FAJ);
+            index       = 0;
+            txt1        = solicitudConsulta(txt1);
+            txt1        = solicitudConsulta(txt1);
             
+            System.out.println(txt1);
+
         } catch (IOException ex) {
             System.err.print(ex);
         }
@@ -63,6 +71,32 @@ public class Main {
             }
         }
         return posicion;
+    }
+    
+    public static String solicitudConsulta (String txt) throws SQLException{
+        int position    = posicionPalabra(txt, "Tipo OperaciónAfiliado");
+        
+        String text1    = txt.substring(position + 24);
+        String text2    = null;
+        String result   = text1.substring(0, text1.indexOf("\n"));
+        String compEmp1 = "Solicitudes de Informes  (Resumen últimos 30 días)";
+        String compEmp2 = "Informconf Credit Scoring M0200INF";
+
+        while(result.compareToIgnoreCase(compEmp1) != 0 && result.compareToIgnoreCase(compEmp2) != 0) {
+            if (!"".equals(result)) {
+                index = index + 1;
+                tr.WEBINFEMPSetEmpresa(index, WEBCON_COD, result);
+            }
+
+            text2   = text1.substring(result.length() + 1);
+            result  = text2.substring(0, text2.indexOf("\r"));
+            result  = text2.substring(0, text2.indexOf("\n"));
+            result  = text2.substring(0, text2.indexOf("\r\n"));
+            result  = result.trim();
+            text1   = text2;
+        }
+        
+        return text1;
     }
 
     public static String generarPDF(String arcCI, String arcByte) throws FileNotFoundException, IOException{

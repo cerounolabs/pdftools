@@ -106,4 +106,30 @@ public class TransactionSQL {
         
         return SQLReturn;
     }
+    
+    public String WEBINFEMPSetEmpresa(int WEBINFEMP_COD, String WEBINFEMP_CON, String WEBINFEMP_COM) throws SQLException{
+        String SQLReturn = null;
+        
+        try {
+            db = new Connection();
+            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFEMP (WEBINFEMP_COD, WEBINFEMP_CON, WEBINFEMP_COM) VALUES (?, ?, ?)");
+            ps.setInt(1, WEBINFEMP_COD);
+            ps.setString(2, WEBINFEMP_CON);
+            ps.setString(3, WEBINFEMP_COM);
+            ps.executeUpdate();
+            ps.close();
+            SQLReturn = "OK";
+            
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            SQLReturn = "ERROR";
+            
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
+        }
+        
+        return SQLReturn;
+    }
 }

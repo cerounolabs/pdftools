@@ -43,7 +43,6 @@ public class Connection {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             conn_driver = java.sql.DriverManager.getConnection(getConnectionUrl(), conn_user, conn_pass);
-            System.out.print("YES");
         } catch (ClassNotFoundException | SQLException e) {
             System.err.print("Error Trace in getConnection() : " + e.getMessage());
         }
