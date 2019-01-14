@@ -33,27 +33,24 @@ public class Main {
     private static int index;
     
     public static void main(String[] args) throws IOException, SQLException {
-        tr  = new TransactionSQL();
+        tr          = new TransactionSQL();
         
-        WEBCON_COD  = "20190113145301";
-        //WEBCON_COD  = args[0];
+        WEBCON_COD  = args[0];
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
         WEBINF_ARC  = tr.WEBINFGetArchivo(WEBCON_COD);
         fileName    = generarPDF(WEBCON_DOC.trim(), WEBINF_ARC.trim());
         
-        pdf = new PDFManager();
+        pdf         = new PDFManager();
         pdf.setFilePath(fileName);
         
         try {
             txt1        = pdf.toText();
-            
             posText     = posicionPalabra(txt1, "Faja");
             WEBINF_FAJ  = txt1.substring(posText + 6, posText + 7);
             tr.WEBINFSetFaja(WEBCON_COD, WEBINF_FAJ);
             index       = 0;
             txt1        = solicitudConsulta(txt1);
             txt1        = solicitudConsulta(txt1);
-
         } catch (IOException ex) {
             System.err.print(ex);
         }
@@ -79,8 +76,14 @@ public class Main {
         String result   = text1.substring(0, text1.indexOf("\n"));
         String compEmp1 = "Solicitudes de Informes  (Resumen últimos 30 días)";
         String compEmp2 = "Informconf Credit Scoring M0200INF";
+        String compEmp3 = "Solicitudes de Informes ";
+        String compEmp4 = "  (Resumen últimos 30 días)";
 
-        while(result.compareToIgnoreCase(compEmp1) != 0 && result.compareToIgnoreCase(compEmp2) != 0) {
+        while(result.compareToIgnoreCase(compEmp1) != 0 && result.compareToIgnoreCase(compEmp2) != 0 && result.compareToIgnoreCase(compEmp3) != 0 && result.compareToIgnoreCase(compEmp4) != 0) {
+            if ("(Resumen últimos 30 días)".equals(result.trim())) {
+                break;
+            }
+
             if (!"".equals(result)) {
                 index = index + 1;
                 tr.WEBINFEMPSetEmpresa(index, WEBCON_COD, result);

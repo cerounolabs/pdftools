@@ -13,6 +13,7 @@ package pdftools;
 import java.sql.SQLException;
 
 public class Connection {
+/*
     private java.sql.Connection conn_driver = null;
     private final String conn_url           = "jdbc:sqlserver://";
     private final String conn_server        = "PC-01";
@@ -23,7 +24,7 @@ public class Connection {
     private final String conn_pass          = "sa123";
     private final String conn_method        = "Direct";
     private final String conn_security      = "false";
-/*
+*/
     private java.sql.Connection conn_driver = null;
     private final String conn_url           = "jdbc:sqlserver://";
     private final String conn_server        = "SRVAPP";
@@ -34,7 +35,7 @@ public class Connection {
     private final String conn_pass          = "Carsa@2019";
     private final String conn_method        = "Direct";
     private final String conn_security      = "false";
-*/
+
     public Connection() {
     
     }
