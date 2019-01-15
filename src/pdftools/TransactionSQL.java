@@ -107,15 +107,19 @@ public class TransactionSQL {
         return SQLReturn;
     }
     
-    public String WEBINFEMPSetEmpresa(int WEBINFEMP_COD, String WEBINFEMP_CON, String WEBINFEMP_COM) throws SQLException{
+    public String WEBINFEMPSetEmpresa(int WEBINFEMP_COD, String WEBINFEMP_CON, String WEBINFEMP_COM, String WEBINFEMP_EMP, String WEBINFEMP_TEL, String WEBINFEMP_FEC, String WEBINFEMP_TIP) throws SQLException{
         String SQLReturn = null;
         
         try {
             db = new Connection();
-            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFEMP (WEBINFEMP_COD, WEBINFEMP_CON, WEBINFEMP_COM) VALUES (?, ?, ?)");
+            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFEMP (WEBINFEMP_COD, WEBINFEMP_CON, WEBINFEMP_COM, WEBINFEMP_EMP, WEBINFEMP_TEL, WEBINFEMP_FEC, WEBINFEMP_TIP) VALUES (?, ?, ?, ?, ?, ?, ?)");
             ps.setInt(1, WEBINFEMP_COD);
             ps.setString(2, WEBINFEMP_CON);
             ps.setString(3, WEBINFEMP_COM);
+            ps.setString(4, WEBINFEMP_EMP);
+            ps.setString(5, WEBINFEMP_TEL);
+            ps.setString(6, WEBINFEMP_FEC);
+            ps.setString(7, WEBINFEMP_TIP);
             ps.executeUpdate();
             ps.close();
             SQLReturn = "OK";

@@ -15,10 +15,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
+import java.util.Date;
 
 public class Main {
-    private static int posText;
+    
     private static TransactionSQL tr;
     private static PDFManager pdf;
     
@@ -26,13 +29,20 @@ public class Main {
     private static String WEBCON_DOC;
     private static String WEBINF_ARC;
     private static String WEBINF_FAJ;
+    private static String WEBINFEMP_EMP;
+    private static String WEBINFEMP_TEL;
+    private static String WEBINFEMP_FEC;
+    private static String WEBINFEMP_TIP;
     
     private static String fileName;
     private static String txt1;
     
+    
+    private static int posText;
+    private static int cantPag;
     private static int index;
     
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException, ParseException {
         tr          = new TransactionSQL();
         
         WEBCON_COD  = args[0];
@@ -45,12 +55,19 @@ public class Main {
         
         try {
             txt1        = pdf.toText();
+            
+            posText     = posicionPalabra(txt1, "Pág: 1/");
+            cantPag     = Integer.parseInt(txt1.substring(posText + 7, posText + 8));
+
             posText     = posicionPalabra(txt1, "Faja");
             WEBINF_FAJ  = txt1.substring(posText + 6, posText + 7);
             tr.WEBINFSetFaja(WEBCON_COD, WEBINF_FAJ);
+            
             index       = 0;
-            txt1        = solicitudConsulta(txt1);
-            txt1        = solicitudConsulta(txt1);
+            
+            for (int i = 0; i < cantPag; i++) {
+                txt1 = solicitudConsulta(txt1);
+            }
         } catch (IOException ex) {
             System.err.print(ex);
         }
@@ -68,7 +85,7 @@ public class Main {
         return posicion;
     }
     
-    public static String solicitudConsulta (String txt) throws SQLException{
+    public static String solicitudConsulta (String txt) throws SQLException, ParseException{
         int position    = posicionPalabra(txt, "Tipo OperaciónAfiliado");
         
         String text1    = txt.substring(position + 24);
@@ -78,15 +95,35 @@ public class Main {
         String compEmp2 = "Informconf Credit Scoring M0200INF";
         String compEmp3 = "Solicitudes de Informes ";
         String compEmp4 = "  (Resumen últimos 30 días)";
+        String compEmp5 = "(Art.28 C.N.) eximiéndose de toda responsabilidad por cualquier alteración o error que pudiera existir, no siendo tampoco carta";
+        String compEmp6 = "Solicitudes de Informes  (Últimos 3 años)";
+        String compEmp7 = "  (Resumen últimos 3 años)";
+        String compEmp8 = "s  (Resumen últimos 30 días)";
 
-        while(result.compareToIgnoreCase(compEmp1) != 0 && result.compareToIgnoreCase(compEmp2) != 0 && result.compareToIgnoreCase(compEmp3) != 0 && result.compareToIgnoreCase(compEmp4) != 0) {
-            if ("(Resumen últimos 30 días)".equals(result.trim())) {
+        
+        while(result.compareToIgnoreCase(compEmp1) != 0 && result.compareToIgnoreCase(compEmp2) != 0 && result.compareToIgnoreCase(compEmp3) != 0 && result.compareToIgnoreCase(compEmp4) != 0 && result.compareToIgnoreCase(compEmp5) != 0 && result.compareToIgnoreCase(compEmp6) != 0 && result.compareToIgnoreCase(compEmp7) != 0 && result.compareToIgnoreCase(compEmp8) != 0) {
+            if (compEmp4.trim().equals(result.trim()) || compEmp8.trim().equals(result.trim())) {
                 break;
             }
 
             if (!"".equals(result)) {
-                index = index + 1;
-                tr.WEBINFEMPSetEmpresa(index, WEBCON_COD, result);
+                String xResult      = null;
+                
+                index               = index + 1;
+                posText             = posicionPalabra(result, "(Tel:");
+                WEBINFEMP_EMP       = result.substring(0, posText).toUpperCase();
+                
+                xResult             = result.substring(posText);
+                posText             = posicionPalabra(xResult, ")");
+                WEBINFEMP_TEL       = xResult.substring(0, posText + 1).toUpperCase();
+                
+                xResult             = xResult.substring(posText + 2);
+                WEBINFEMP_FEC       = xResult.substring(0, 10);
+                
+                xResult             = xResult.substring(11);
+                WEBINFEMP_TIP       = xResult.toUpperCase();
+                
+                tr.WEBINFEMPSetEmpresa(index, WEBCON_COD, result, WEBINFEMP_EMP, WEBINFEMP_TEL, WEBINFEMP_FEC, WEBINFEMP_TIP);
             }
 
             text2   = text1.substring(result.length() + 1);
