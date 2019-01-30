@@ -33,6 +33,11 @@ public class Main {
     private static String WEBINFEMP_TEL;
     private static String WEBINFEMP_FEC;
     private static String WEBINFEMP_TIP;
+    private static String WEBINFPER_NOM;
+    private static String WEBINFPER_APE;
+    private static String WEBINFPER_DOC;
+    private static String WEBINFPER_SEX;
+    private static String WEBINFPER_EST;
     
     private static String fileName;
     private static String txt1;
@@ -56,9 +61,11 @@ public class Main {
         try {
             txt1        = pdf.toText();
             
+            solicitudPersona(txt1);
+            
             posText     = posicionPalabra(txt1, "Pág: 1/");
             cantPag     = Integer.parseInt(txt1.substring(posText + 7, posText + 8));
-
+            
             posText     = posicionPalabra(txt1, "Faja");
             WEBINF_FAJ  = txt1.substring(posText + 6, posText + 7);
             tr.WEBINFSetFaja(WEBCON_COD, WEBINF_FAJ);
@@ -85,6 +92,32 @@ public class Main {
         return posicion;
     }
     
+    public static void solicitudPersona (String txt) throws SQLException{
+        String auxTxt;
+        
+        posText         = posicionPalabra(txt, "Nombre: ");
+        auxTxt          = txt.substring(posText + 8);
+        WEBINFPER_NOM   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        
+        posText         = posicionPalabra(txt, "Apellido: ");
+        auxTxt          = txt.substring(posText + 10);
+        WEBINFPER_APE   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        
+        posText         = posicionPalabra(txt, "Documento: ");
+        auxTxt          = txt.substring(posText + 11);
+        WEBINFPER_DOC   = auxTxt.substring(0, 10);
+        
+        posText         = posicionPalabra(txt, "Sexo: ");
+        auxTxt          = txt.substring(posText + 6);
+        WEBINFPER_SEX   = auxTxt.substring(0, 9);
+        
+        posText         = posicionPalabra(txt, "Estado Civil: ");
+        auxTxt          = txt.substring(posText + 14);
+        WEBINFPER_EST   = auxTxt.substring(0, auxTxt.indexOf(" "));
+
+        tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST);
+    }
+
     public static String solicitudConsulta (String txt) throws SQLException, ParseException{
         int position    = posicionPalabra(txt, "Tipo OperaciónAfiliado");
         
@@ -138,13 +171,13 @@ public class Main {
     }
 
     public static String generarPDF(String arcCI, String arcByte) throws FileNotFoundException, IOException{
-        File folder         = new File("c:\\DATOS\\Informconf\\");
+        File folder         = new File("d:\\DATOS\\Informconf\\");
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
         NombreArchivo na    = new NombreArchivo();
-        String nameFile     = "c:\\DATOS\\Informconf\\Informconf_CI_" + arcCI + "_" + na.getNombre() + ".pdf";
+        String nameFile     = "d:\\DATOS\\Informconf\\Informconf_CI_" + arcCI + "_" + na.getNombre() + ".pdf";
         byte[] arcBase64    = Base64.getDecoder().decode(arcByte);
 
         try (FileOutputStream fos = new FileOutputStream(nameFile)) {
