@@ -52,6 +52,39 @@ public class TransactionSQL {
         return SQLReturn;
     }
     
+    public String PARCOM01GetDirectorio(int PaCEmp) throws SQLException{
+        String SQLReturn        = null;
+        String auxPaCIP         = "";
+        String auxPaCCarp       = "";
+        try {
+            db = new Connection();
+            ps = db.getConnection().prepareStatement("SELECT * FROM PARCOM01 WHERE PaCEmp = ?");
+            ps.setInt(1, PaCEmp);
+            ps.executeQuery();
+            rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                auxPaCIP    = rs.getString("PaCIP");
+                auxPaCCarp  = rs.getString("PaCCarp");
+            }
+            
+            rs.close();
+            ps.close();
+           
+            SQLReturn = auxPaCIP.trim() + "\\" + auxPaCCarp.trim();
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            SQLReturn = "ERROR";
+            
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
+        }
+        
+        return SQLReturn;
+    }
+    
     public String WEBINFGetArchivo(String WEBINF_CON) throws SQLException{
         String SQLReturn        = null;
         

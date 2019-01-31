@@ -53,10 +53,10 @@ public class Main {
         WEBCON_COD  = args[0];
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
         WEBINF_ARC  = tr.WEBINFGetArchivo(WEBCON_COD);
-        fileName    = generarPDF(WEBCON_DOC.trim(), WEBINF_ARC.trim());
+        fileName    = generarPDF(WEBCON_DOC.trim(), WEBINF_ARC.trim(), WEBCON_COD);
         
         pdf         = new PDFManager();
-        pdf.setFilePath(fileName);
+        pdf.setFilePath(fileName.trim());
         
         try {
             txt1        = pdf.toText();
@@ -170,14 +170,15 @@ public class Main {
         return text1;
     }
 
-    public static String generarPDF(String arcCI, String arcByte) throws FileNotFoundException, IOException{
-        File folder         = new File("d:\\DATOS\\Informconf\\");
+    public static String generarPDF(String arcCI, String arcByte, String arcName) throws FileNotFoundException, IOException, SQLException{
+        String dir          = tr.PARCOM01GetDirectorio(101);
+        File folder         = new File(dir);
         if (!folder.exists()) {
             folder.mkdirs();
         }
 
         NombreArchivo na    = new NombreArchivo();
-        String nameFile     = "d:\\DATOS\\Informconf\\Informconf_CI_" + arcCI + "_" + na.getNombre() + ".pdf";
+        String nameFile     = dir.trim() + "\\Informconf_CI_" + arcCI.trim() + "_" + arcName.trim() + ".pdf";
         byte[] arcBase64    = Base64.getDecoder().decode(arcByte);
 
         try (FileOutputStream fos = new FileOutputStream(nameFile)) {
