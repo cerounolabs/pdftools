@@ -170,12 +170,12 @@ public class TransactionSQL {
         return SQLReturn;
     }
     
-    public String WEBINFPERSetPersona(String WEBINFPER_CON, int WEBINFPER_COD, String WEBINFPER_NOM, String WEBINFPER_APE, String WEBINFPER_DOC, String WEBINFPER_SEX, String WEBINFPER_EST) throws SQLException{
+    public String WEBINFPERSetPersona(String WEBINFPER_CON, int WEBINFPER_COD, String WEBINFPER_NOM, String WEBINFPER_APE, String WEBINFPER_DOC, String WEBINFPER_SEX, String WEBINFPER_EST, String WEBINFPER_NAC, String WEBINFPER_FEC) throws SQLException{
         String SQLReturn = null;
         
         try {
             db = new Connection();
-            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFPER (WEBINFPER_CON, WEBINFPER_COD, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFPER (WEBINFPER_CON, WEBINFPER_COD, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST, WEBINFPER_NAC, WEBINFPER_FEC) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, WEBINFPER_CON);
             ps.setInt(2, WEBINFPER_COD);
             ps.setString(3, WEBINFPER_NOM);
@@ -183,6 +183,8 @@ public class TransactionSQL {
             ps.setString(5, WEBINFPER_DOC);
             ps.setString(6, WEBINFPER_SEX);
             ps.setString(7, WEBINFPER_EST);
+            ps.setString(8, WEBINFPER_NAC);
+            ps.setString(9, WEBINFPER_FEC);
             ps.executeUpdate();
             ps.close();
             SQLReturn = "OK";

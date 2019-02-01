@@ -38,6 +38,8 @@ public class Main {
     private static String WEBINFPER_DOC;
     private static String WEBINFPER_SEX;
     private static String WEBINFPER_EST;
+    private static String WEBINFPER_NAC;
+    private static String WEBINFPER_FEC;
     
     private static String fileName;
     private static String txt1;
@@ -57,12 +59,12 @@ public class Main {
         
         pdf         = new PDFManager();
         pdf.setFilePath(fileName.trim());
-        
+
         try {
             txt1        = pdf.toText();
-            
+
             solicitudPersona(txt1);
-            
+
             posText     = posicionPalabra(txt1, "Pág: 1/");
             cantPag     = Integer.parseInt(txt1.substring(posText + 7, posText + 8));
             
@@ -114,8 +116,34 @@ public class Main {
         posText         = posicionPalabra(txt, "Estado Civil: ");
         auxTxt          = txt.substring(posText + 14);
         WEBINFPER_EST   = auxTxt.substring(0, auxTxt.indexOf(" "));
-
-        tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST);
+               
+        posText         = posicionPalabra(txt, "Nacionalidad: ");
+        auxTxt          = txt.substring(posText + 14);
+        WEBINFPER_NAC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        
+        posText         = posicionPalabra(txt, "Fec.Nacimiento: ");
+        auxTxt          = txt.substring(posText + 16);
+        WEBINFPER_FEC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        
+        if (WEBINFPER_EST.equals("mes")){
+            posText         = posicionPalabra(txt, "Sexo: ");
+            auxTxt          = txt.substring(posText + 16);
+            WEBINFPER_EST   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        }
+        
+        if (WEBINFPER_NAC.equals("mes Confidenciales\r")){
+            posText         = posicionPalabra(txt, "Histórico de Lugares de Trabajo");
+            auxTxt          = txt.substring(posText - 11);
+            WEBINFPER_NAC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        }
+        
+        if (WEBINFPER_FEC.equals("s Confidenciales\r")){
+            posText         = posicionPalabra(txt, "PARAGUAYA");
+            auxTxt          = txt.substring(posText - 12);
+            WEBINFPER_FEC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        }
+        
+        tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST, WEBINFPER_NAC, WEBINFPER_FEC);
     }
 
     public static String solicitudConsulta (String txt) throws SQLException, ParseException{
