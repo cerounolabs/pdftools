@@ -38,6 +38,7 @@ public class Main {
     private static String WEBINFPER_DOC;
     private static String WEBINFPER_SEX;
     private static String WEBINFPER_EST;
+    private static String WEBINFPER_NAC;
     
     private static String fileName;
     private static String txt1;
@@ -54,9 +55,9 @@ public class Main {
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
         WEBINF_ARC  = tr.WEBINFGetArchivo(WEBCON_COD);
         fileName    = generarPDF(WEBCON_DOC.trim(), WEBINF_ARC.trim(), WEBCON_COD);
-        
+
         pdf         = new PDFManager();
-        pdf.setFilePath(fileName.trim());
+        pdf.setFilePath(fileName);
         
         try {
             txt1        = pdf.toText();
@@ -114,7 +115,23 @@ public class Main {
         posText         = posicionPalabra(txt, "Estado Civil: ");
         auxTxt          = txt.substring(posText + 14);
         WEBINFPER_EST   = auxTxt.substring(0, auxTxt.indexOf(" "));
-
+        
+        posText         = posicionPalabra(txt, "Nacionalidad: ");
+        auxTxt          = txt.substring(posText + 14);
+        WEBINFPER_NAC   = auxTxt.substring(0, 10);
+        
+        if (WEBINFPER_EST.equals("mes")){
+            posText         = posicionPalabra(txt, "Sexo: ");
+            auxTxt          = txt.substring(posText + 16);
+            WEBINFPER_EST   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        }
+        
+        if (WEBINFPER_NAC.equals("mes")){
+            posText         = posicionPalabra(txt, "Histórico de Direcciones: ");
+            auxTxt          = txt.substring(posText - 30);
+            WEBINFPER_NAC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+        }
+        
         tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST);
     }
 
