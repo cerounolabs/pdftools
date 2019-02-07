@@ -56,7 +56,7 @@ public class Main {
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
         WEBINF_ARC  = tr.WEBINFGetArchivo(WEBCON_COD);
         fileName    = generarPDF(WEBCON_DOC.trim(), WEBINF_ARC.trim(), WEBCON_COD);
-        
+
         pdf         = new PDFManager();
         pdf.setFilePath(fileName.trim());
 
