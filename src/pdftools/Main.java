@@ -27,12 +27,15 @@ public class Main {
     
     private static String WEBCON_COD;
     private static String WEBCON_DOC;
+    
     private static String WEBINF_ARC;
     private static String WEBINF_FAJ;
+    
     private static String WEBINFEMP_EMP;
     private static String WEBINFEMP_TEL;
     private static String WEBINFEMP_FEC;
     private static String WEBINFEMP_TIP;
+    
     private static String WEBINFPER_NOM;
     private static String WEBINFPER_APE;
     private static String WEBINFPER_DOC;
@@ -40,6 +43,21 @@ public class Main {
     private static String WEBINFPER_EST;
     private static String WEBINFPER_NAC;
     private static String WEBINFPER_FEC;
+    
+    private static String WEBINFDIR_CIU;
+    private static String WEBINFDIR_BAR;
+    private static String WEBINFDIR_DIR;
+    private static String WEBINFDIR_TEL;
+    private static String WEBINFDIR_FEC;
+    
+    private static String WEBINFTRA_CIU;
+    private static String WEBINFTRA_DIR;
+    private static String WEBINFTRA_EMP;
+    private static String WEBINFTRA_CAR;
+    private static String WEBINFTRA_TEL;
+    private static String WEBINFTRA_ING;
+    private static String WEBINFTRA_FRP;
+    private static String WEBINFTRA_FRS;
     
     private static String fileName;
     private static String txt1;
@@ -50,7 +68,7 @@ public class Main {
     private static int index;
     
     public static void main(String[] args) throws IOException, SQLException, ParseException {
-        tr          = new TransactionSQL();
+/*        tr          = new TransactionSQL();
         
         WEBCON_COD  = args[0];
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
@@ -59,12 +77,18 @@ public class Main {
 
         pdf         = new PDFManager();
         pdf.setFilePath(fileName.trim());
+        */
+        pdf         = new PDFManager();
+        pdf.setFilePath("C:\\Datos\\Informconf\\Informconf.pdf");
 
         try {
             txt1        = pdf.toText();
-
+            //ystem.out.print(txt1);
+/*
             solicitudPersona(txt1);
-
+*/
+            solicitudTrabajo(txt1);
+/*
             posText     = posicionPalabra(txt1, "Pág: 1/");
             cantPag     = Integer.parseInt(txt1.substring(posText + 7, posText + 8));
             
@@ -76,7 +100,7 @@ public class Main {
             
             for (int i = 0; i < cantPag; i++) {
                 txt1 = solicitudConsulta(txt1);
-            }
+            }*/
         } catch (IOException ex) {
             System.err.print(ex);
         }
@@ -140,10 +164,78 @@ public class Main {
         if (WEBINFPER_FEC.equals("s Confidenciales\r")){
             posText         = posicionPalabra(txt, "PARAGUAYA");
             auxTxt          = txt.substring(posText - 12);
-            WEBINFPER_FEC   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+            WEBINFPER_FEC   = auxTxt.substring(0, 10);
         }
         
         tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST, WEBINFPER_NAC, WEBINFPER_FEC);
+    }
+    
+    public static void solicitudTrabajo (String txt) throws SQLException{
+        String auxTxt;
+        String forTxt;
+        int indexInt = 0;
+        forTxt          = txt.substring(0, 6);
+
+        if (forTxt.equals("Docume")){
+            posText         = posicionPalabra(txt, "Histórico de Lugares de Trabajo\r\n");
+            auxTxt          = txt.substring(posText + 33);
+
+            posText         = posicionPalabra(auxTxt, "Solicitudes de Informes (Últimos 3 años)\r\n");
+            auxTxt          = auxTxt.substring(0, posText - 2);
+
+            while(auxTxt.compareToIgnoreCase("") != 0) {
+                indexInt        = indexInt + 1;
+                
+                posText         = posicionPalabra(auxTxt, "Lugar:");
+                auxTxt          = auxTxt.substring(posText + 7);
+                
+                posText         = posicionPalabra(auxTxt, "Cargo:");
+                WEBINFTRA_EMP   = auxTxt.substring(0, posText);
+                auxTxt          = auxTxt.substring(posText + 7);
+
+                posText         = posicionPalabra(auxTxt, "Tel:");
+                WEBINFTRA_CAR   = auxTxt.substring(0, posText);
+                auxTxt          = auxTxt.substring(posText + 5);
+                
+                posText         = posicionPalabra(auxTxt, "Dir.:");
+                WEBINFTRA_TEL   = auxTxt.substring(0, posText - 1);
+                auxTxt          = auxTxt.substring(posText + 6);
+                
+                posText         = posicionPalabra(auxTxt, "Ciudad:");
+                WEBINFTRA_DIR   = auxTxt.substring(0, posText);
+                auxTxt          = auxTxt.substring(posText + 8);
+                
+                posText         = posicionPalabra(auxTxt, "F.Ing.:");
+                WEBINFTRA_CIU   = auxTxt.substring(0, posText - 1);
+                auxTxt          = auxTxt.substring(posText + 8);
+                
+                posText         = posicionPalabra(auxTxt, "Fec. de 1ra. y Ultima Referencia de este trabajo:");
+                WEBINFTRA_ING   = auxTxt.substring(0, posText);
+                WEBINFTRA_FRP   = auxTxt.substring(posText + 50, posText + 60);
+                WEBINFTRA_FRS   = auxTxt.substring(posText + 61, posText + 71);
+                auxTxt          = auxTxt.substring(posText + 71);
+                
+                tr.WEBINFPERSetTrabajo(WEBCON_COD, indexInt, WEBINFTRA_EMP, WEBINFTRA_CAR, WEBINFTRA_ING, WEBINFTRA_TEL, WEBINFTRA_CIU, WEBINFTRA_DIR, WEBINFTRA_FRP, WEBINFTRA_FRS);
+            }
+        } else {
+            posText         = posicionPalabra(txt, "Histórico de Lugares de Trabajo ");
+            auxTxt          = txt.substring(posText + 35);
+
+            posText         = posicionPalabra(auxTxt, "Histórico de Direcciones\r\n");
+            auxTxt          = auxTxt.substring(0, posText - 2);
+            
+            posText         = posicionPalabra(auxTxt, "Cargo");
+            
+            while(auxTxt.compareToIgnoreCase("") != 0) {
+                indexInt        = indexInt + 1;
+                
+                posText         = posicionPalabra(auxTxt, "Cargo:");
+                auxTxt          = auxTxt.substring(0, posText);
+                
+                System.out.println(auxTxt);
+                auxTxt = "";
+            }
+        }
     }
 
     public static String solicitudConsulta (String txt) throws SQLException, ParseException{
