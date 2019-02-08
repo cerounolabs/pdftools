@@ -68,7 +68,7 @@ public class Main {
     private static int index;
     
     public static void main(String[] args) throws IOException, SQLException, ParseException {
-/*        tr          = new TransactionSQL();
+        tr          = new TransactionSQL();
         
         WEBCON_COD  = args[0];
         WEBCON_DOC  = tr.WEBCONGetDocumento(WEBCON_COD);
@@ -77,18 +77,13 @@ public class Main {
 
         pdf         = new PDFManager();
         pdf.setFilePath(fileName.trim());
-        */
-        pdf         = new PDFManager();
-        pdf.setFilePath("C:\\Datos\\Informconf\\Informconf.pdf");
 
         try {
             txt1        = pdf.toText();
-            //ystem.out.print(txt1);
-/*
+            
             solicitudPersona(txt1);
-*/
             solicitudTrabajo(txt1);
-/*
+
             posText     = posicionPalabra(txt1, "Pág: 1/");
             cantPag     = Integer.parseInt(txt1.substring(posText + 7, posText + 8));
             
@@ -100,7 +95,7 @@ public class Main {
             
             for (int i = 0; i < cantPag; i++) {
                 txt1 = solicitudConsulta(txt1);
-            }*/
+            }
         } catch (IOException ex) {
             System.err.print(ex);
         }
@@ -224,16 +219,34 @@ public class Main {
             posText         = posicionPalabra(auxTxt, "Histórico de Direcciones\r\n");
             auxTxt          = auxTxt.substring(0, posText - 2);
             
-            posText         = posicionPalabra(auxTxt, "Cargo");
-            
             while(auxTxt.compareToIgnoreCase("") != 0) {
                 indexInt        = indexInt + 1;
                 
                 posText         = posicionPalabra(auxTxt, "Cargo:");
-                auxTxt          = auxTxt.substring(0, posText);
+                WEBINFTRA_TEL   = auxTxt.substring(5, posText);
+                auxTxt          = auxTxt.substring(posText);
                 
-                System.out.println(auxTxt);
-                auxTxt = "";
+                posText         = posicionPalabra(auxTxt, "Ciudad:");
+                WEBINFTRA_CIU   = auxTxt.substring(posText + 8, posText + 10 + auxTxt.indexOf("\n"));
+                
+                auxTxt          = auxTxt.substring(posText + 11 + auxTxt.indexOf("\n"));
+                WEBINFTRA_CAR   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+                
+                posText         = posicionPalabra(auxTxt, WEBINFTRA_CAR);
+                auxTxt          = auxTxt.substring(1 + auxTxt.indexOf("\n"));
+                WEBINFTRA_DIR   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+                
+                posText         = posicionPalabra(auxTxt, "Lugar:");
+                WEBINFTRA_EMP   = auxTxt.substring(posText + 7, posText + 2 + auxTxt.indexOf("\r\n"));
+                auxTxt          = auxTxt.substring(posText + 9 + auxTxt.indexOf("\n"));
+                
+                WEBINFTRA_FRP   = auxTxt.substring(50, 61 + auxTxt.indexOf("\r\n"));
+                auxTxt          = auxTxt.substring(50, 61 + auxTxt.indexOf("\r\n"));
+                
+                WEBINFTRA_FRS   = auxTxt.substring(0, 10);
+                auxTxt          = auxTxt.substring(10);
+                
+                tr.WEBINFPERSetTrabajo(WEBCON_COD, indexInt, WEBINFTRA_EMP, WEBINFTRA_CAR, WEBINFTRA_ING, WEBINFTRA_TEL, WEBINFTRA_CIU, WEBINFTRA_DIR, WEBINFTRA_FRP, WEBINFTRA_FRS);
             }
         }
     }
