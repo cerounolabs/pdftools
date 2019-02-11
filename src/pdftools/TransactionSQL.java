@@ -207,7 +207,7 @@ public class TransactionSQL {
         
         try {
             db = new Connection();
-            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFTRA (WEBINFTRA_CON, WEBINFTRA_COD, WEBINFTRA_EMP, WEBINFTRA_CAR, WEBINFTRA_ING, WEBINFTRA_TEL, WEBINFTRA_CIU, WEBINFTRA_DIR, WEBINFTRA_FRP, WEBINFTRA_FRS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFTRA (WEBINFTRA_CON, WEBINFTRA_COD, WEBINFTRA_EMP, WEBINFTRA_CAR, WEBINFTRA_ING, WEBINFTRA_TEL, WEBINFTRA_CIU, WEBINFTRA_DIR, WEBINFTRA_FRP, WEBINFTRA_FRS) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
             ps.setString(1, WEBINFTRA_CON);
             ps.setInt(2, WEBINFTRA_COD);
             ps.setString(3, WEBINFTRA_EMP);
