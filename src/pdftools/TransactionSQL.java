@@ -202,6 +202,37 @@ public class TransactionSQL {
         return SQLReturn;
     }
     
+    public String WEBINFDIRSetDireccion(String WEBINFDIR_CON, int WEBINFDIR_COD, String WEBINFDIR_CIU, String WEBINFDIR_BAR, String WEBINFDIR_DIR, String WEBINFDIR_TEL, String WEBINFDIR_FRP, String WEBINFDIR_FRS) throws SQLException{
+        String SQLReturn = null;
+        
+        try {
+            db = new Connection();
+            ps = db.getConnection().prepareStatement("INSERT INTO WEBINFDIR (WEBINFDIR_CON, WEBINFDIR_COD, WEBINFDIR_CIU, WEBINFDIR_BAR, WEBINFDIR_DIR, WEBINFDIR_TEL, WEBINFDIR_FRP, WEBINFDIR_FRS) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            ps.setString(1, WEBINFDIR_CON);
+            ps.setInt(2, WEBINFDIR_COD);
+            ps.setString(3, WEBINFDIR_CIU);
+            ps.setString(4, WEBINFDIR_BAR);
+            ps.setString(5, WEBINFDIR_DIR);
+            ps.setString(6, WEBINFDIR_TEL);
+            ps.setString(7, WEBINFDIR_FRP);
+            ps.setString(8, WEBINFDIR_FRS);
+            ps.executeUpdate();
+            ps.close();
+            SQLReturn = "OK";
+            
+        } catch (SQLException e) {
+            System.err.print(e.getMessage());
+            SQLReturn = "ERROR";
+            
+        } finally {
+            if (ps != null) {
+                ps.close();
+            }
+        }
+        
+        return SQLReturn;
+    }
+    
     public String WEBINFPERSetTrabajo(String WEBINFTRA_CON, int WEBINFTRA_COD, String WEBINFTRA_EMP, String WEBINFTRA_CAR, String WEBINFTRA_ING, String WEBINFTRA_TEL, String WEBINFTRA_CIU, String WEBINFTRA_DIR, String WEBINFTRA_FRP, String WEBINFTRA_FRS) throws SQLException{
         String SQLReturn = null;
         

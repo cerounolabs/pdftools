@@ -82,8 +82,8 @@ public class Main {
         try {
             txt1        = pdf.toText();
             
-            //solicitudDireccion(txt1);
             solicitudPersona(txt1);
+            solicitudDireccion(txt1);
             solicitudTrabajo(txt1);
 
             posText     = posicionPalabra(txt1, "Pág: 1/");
@@ -166,21 +166,56 @@ public class Main {
         
         tr.WEBINFPERSetPersona(WEBCON_COD, 1, WEBINFPER_NOM, WEBINFPER_APE, WEBINFPER_DOC, WEBINFPER_SEX, WEBINFPER_EST, WEBINFPER_NAC, WEBINFPER_FEC);
     }
-    /*
+    
     public static void solicitudDireccion (String txt) throws SQLException{
         String auxTxt;
         String forTxt;
         int indexInt    = 0;
+        
         forTxt          = txt.substring(0, 6);
         posText         = posicionPalabra(txt, "Histórico de Direcciones");
 
         if (posText > 0) {
             if (forTxt.equals("Docume")) {
                 posText         = posicionPalabra(txt, "Histórico de Direcciones\r\n");
-                auxTxt          = txt.substring(posText + 33);
+                auxTxt          = txt.substring(posText + 26);
 
-                posText         = posicionPalabra(auxTxt, "Solicitudes de Informes (Últimos 3 años)\r\n");
-                auxTxt          = auxTxt.substring(0, posText - 2);
+                posText         = posicionPalabra(auxTxt, "Histórico de Lugares de Trabajo\r\n");
+                
+                if (posText > 0) {
+                    auxTxt  = auxTxt.substring(0, posText - 2);
+                } else {
+                    posText = posicionPalabra(auxTxt, "Solicitudes de Informes (Últimos 3 años)\r\n");
+                    auxTxt  = auxTxt.substring(0, posText - 2);
+                }
+                
+                while(auxTxt.compareToIgnoreCase("") != 0) {
+                    indexInt        = indexInt + 1;
+                    
+                    posText         = posicionPalabra(auxTxt, "Barrio:");
+                    WEBINFDIR_DIR   = auxTxt.substring(7, posText - 1);
+                    auxTxt          = auxTxt.substring(posText + 7);
+                    
+                    posText         = posicionPalabra(auxTxt, "Ciudad:");
+                    WEBINFDIR_BAR   = auxTxt.substring(1, posText - 1);
+                    auxTxt          = auxTxt.substring(posText + 7);
+                    
+                    posText         = posicionPalabra(auxTxt, "Tel.:");
+                    WEBINFDIR_CIU   = auxTxt.substring(0, posText - 1);
+                    auxTxt          = auxTxt.substring(posText + 5);
+                    
+                    posText         = posicionPalabra(auxTxt, "Prim. y Ult. Ref:");
+                    WEBINFDIR_TEL   = auxTxt.substring(0, posText - 1);
+                    auxTxt          = auxTxt.substring(posText + 17);
+                    
+                    WEBINFDIR_FRP   = auxTxt.substring(1, 11);
+                    auxTxt          = auxTxt.substring(11);
+                    
+                    WEBINFDIR_FRS   = auxTxt.substring(1, 11);
+                    auxTxt          = auxTxt.substring(11);
+                    
+                    tr.WEBINFDIRSetDireccion(WEBCON_COD, indexInt, WEBINFDIR_CIU, WEBINFDIR_BAR, WEBINFDIR_DIR, WEBINFDIR_TEL, WEBINFDIR_FRP, WEBINFDIR_FRS);
+                }
             } else {
                 posText         = posicionPalabra(txt, "Histórico de Direcciones");
                 auxTxt          = txt.substring(posText + 26);
@@ -189,60 +224,50 @@ public class Main {
                 auxTxt          = auxTxt.substring(0, posText - 1);
 
                 while(auxTxt.compareToIgnoreCase("") != 0) {
-                    System.out.println("+++++++++++++++++++++++++");
-                    int auxPosText = 0;
-                    auxTxt = auxTxt.substring(7);
-
+                    indexInt        = indexInt + 1;
+                    
                     posText         = posicionPalabra(auxTxt, "Ciudad:");
-                    WEBINFDIR_DIR   = auxTxt.substring(0, posText - 1);
-                    System.out.println("WEBINFDIR_DIR => " + WEBINFDIR_DIR);
-                    
+                    WEBINFDIR_DIR   = auxTxt.substring(7, posText - 1);
                     auxTxt          = auxTxt.substring(posText + 8);
-                    //WEBINFDIR_CIU   = auxTxt.substring(0, auxTxt.indexOf(" "));
-                    WEBINFDIR_CIU   = auxTxt.substring(0, auxTxt.indexOf("\r\n"));
-                    System.out.println("WEBINFDIR_CIU => " + WEBINFDIR_CIU);
                     
-                    auxTxt          = auxTxt.substring(auxTxt.indexOf(" ") + 1);
+                    WEBINFDIR_CIU   = auxTxt.substring(0, auxTxt.indexOf("\n"));
+                    auxTxt          = auxTxt.substring(auxTxt.indexOf("\n") + 1);
                     
-                    WEBINFDIR_TEL   = auxTxt.substring(0, auxTxt.indexOf("\r\n"));
-                    posText         = posicionPalabra(WEBINFDIR_TEL, "Prim. y Ult. Ref:");
-
-                    if (posText == 0) {
-                        WEBINFDIR_TEL   = "";
-                    } else {
-                        WEBINFDIR_TEL   = auxTxt.substring(0, auxTxt.indexOf("\r\n"));
-                    }
-                    
-                    System.out.println("WEBINFDIR_TEL => " + WEBINFDIR_TEL);
                     posText         = posicionPalabra(auxTxt, "Barrio:");
-                    WEBINFDIR_BAR   = auxTxt.substring(2, posText);
-                    System.out.println("WEBINFDIR_BAR => " + WEBINFDIR_BAR);
-                    
-                    auxTxt          = auxTxt.substring(posText + 15);
-                    auxTxt          = auxTxt.substring(18);
-                    WEBINFDIR_FRP   = auxTxt.substring(0, auxTxt.indexOf(" "));
-                    System.out.println("WEBINFDIR_FRP => " + WEBINFDIR_FRP);
-                    
-                    auxTxt          = auxTxt.substring(auxTxt.indexOf(" "));
-                    WEBINFDIR_FRS   = auxTxt.substring(1, auxTxt.indexOf("\r\n"));
-                    System.out.println("WEBINFDIR_FRS => " + WEBINFDIR_FRS);
-                    
-                    auxTxt          = auxTxt.substring(auxTxt.indexOf("\r\n") + 2);
-                    posText         = posicionPalabra(auxTxt, "Fecha");
-                    auxPosText      = posicionPalabra(auxTxt, "Calle:");
-                                       
-                    if (posText == auxPosText){
-                        auxTxt = "";
+
+                    if (posText > 0) {
+                        WEBINFDIR_BAR   = auxTxt.substring(0, posText);
+                        auxTxt          = auxTxt.substring(posText);
                     }
+                    
+                    auxTxt          = auxTxt.substring(8);
+                    auxTxt          = auxTxt.substring(24);
+                    
+                    WEBINFDIR_FRP   = auxTxt.substring(1, 11);
+                    auxTxt          = auxTxt.substring(11);
+                    
+                    WEBINFDIR_FRS   = auxTxt.substring(1, 11);
+                    auxTxt          = auxTxt.substring(11);
+                    
+                    posText         = posicionPalabra(auxTxt, "Calle:");
+                    
+                    if (posText == 0){
+                        auxTxt  = "";
+                    } else {
+                        auxTxt  = auxTxt.substring(2);
+                    }
+                    
+                    tr.WEBINFDIRSetDireccion(WEBCON_COD, indexInt, WEBINFDIR_CIU, WEBINFDIR_BAR, WEBINFDIR_DIR, WEBINFDIR_TEL, WEBINFDIR_FRP, WEBINFDIR_FRS);
                 }
             }
         }
     }
-    */
+    
     public static void solicitudTrabajo (String txt) throws SQLException{
         String auxTxt;
         String forTxt;
         int indexInt    = 0;
+        
         forTxt          = txt.substring(0, 6);
         posText         = posicionPalabra(txt, "Histórico de Lugares de Trabajo");
         
@@ -327,6 +352,7 @@ public class Main {
                     auxTxt          = auxTxt.substring(posText + 6);
                     
                     posText         = posicionPalabra(auxTxt, "F.Ing.:");
+                    
                     if (posText > 0) {
                         WEBINFTRA_ING   = auxTxt.substring(9, 19);
                         auxTxt          = auxTxt.substring(19);
