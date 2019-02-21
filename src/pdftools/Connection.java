@@ -20,7 +20,7 @@ public class Connection {
     private final String conn_instance      = "SQLEXPRESS";
     private final String conn_database      = "SISTEMAA";
     private final String conn_user          = "christian";
-    private final String conn_pass          = "Carsa@2019";
+    private final String conn_pass          = "123456";
     private final String conn_method        = "Direct";
     private final String conn_security      = "false";
 

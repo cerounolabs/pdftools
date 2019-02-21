@@ -233,6 +233,13 @@ public class Main {
                     WEBINFDIR_CIU   = auxTxt.substring(0, auxTxt.indexOf("\n"));
                     auxTxt          = auxTxt.substring(auxTxt.indexOf("\n") + 1);
                     
+                    if (WEBINFDIR_CIU.contains("[0-9]") == false && WEBINFDIR_CIU.length() > 2) {
+                        WEBINFDIR_TEL = WEBINFDIR_CIU.replaceAll("[a-zA-Z]", "");
+                        WEBINFDIR_CIU = WEBINFDIR_CIU.replaceAll("[0-9]", "");
+                        WEBINFDIR_CIU = WEBINFDIR_CIU.replaceAll("-", "");
+                        WEBINFDIR_CIU = WEBINFDIR_CIU.replaceAll("/", "");
+                    }
+                    
                     posText         = posicionPalabra(auxTxt, "Barrio:");
 
                     if (posText > 0) {
